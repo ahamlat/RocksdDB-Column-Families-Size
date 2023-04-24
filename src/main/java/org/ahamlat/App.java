@@ -16,19 +16,20 @@ import java.util.List;
  */
 public class App 
 {
+    private static final String PATH = "/data/besu/database";
     public static void main(String[] args) throws RocksDBException {
         RocksDB.loadLibrary();
         Options options = new Options();
         options.setCreateIfMissing(true);
 
         // Open the RocksDB database with multiple column families
-        List<byte[]> cfNames = RocksDB.listColumnFamilies(options, "/data/besu/database");
+        List<byte[]> cfNames = RocksDB.listColumnFamilies(options, PATH );
         List<ColumnFamilyHandle> cfHandles = new ArrayList<>();
         List<ColumnFamilyDescriptor> cfDescriptors = new ArrayList<>();
         for (byte[] cfName : cfNames) {
             cfDescriptors.add(new ColumnFamilyDescriptor(cfName));
         }
-        try (final RocksDB rocksdb = RocksDB.openReadOnly ("/data/besu", cfDescriptors,cfHandles)) {
+        try (final RocksDB rocksdb = RocksDB.openReadOnly (PATH, cfDescriptors,cfHandles)) {
             for (int i = 0; i < cfNames.size(); i++) {
                 byte[] cfName = cfNames.get(i);
                 ColumnFamilyHandle cfHandle = cfHandles.get(i);
