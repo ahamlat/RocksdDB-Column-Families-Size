@@ -22,7 +22,7 @@ public class App
         options.setCreateIfMissing(true);
 
         // Open the RocksDB database with multiple column families
-        List<byte[]> cfNames = RocksDB.listColumnFamilies(options, "/data/besu");
+        List<byte[]> cfNames = RocksDB.listColumnFamilies(options, "/data/besu/database");
         List<ColumnFamilyHandle> cfHandles = new ArrayList<>();
         List<ColumnFamilyDescriptor> cfDescriptors = new ArrayList<>();
         for (byte[] cfName : cfNames) {
