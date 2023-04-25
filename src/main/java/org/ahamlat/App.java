@@ -29,8 +29,9 @@ public class App
         for (byte[] cfName : cfNames) {
             cfDescriptors.add(new ColumnFamilyDescriptor(cfName));
         }
-        boolean emptyColumnFamily = false;
+        boolean emptyColumnFamily ;
         try (final RocksDB rocksdb = RocksDB.openReadOnly (PATH, cfDescriptors,cfHandles)) {
+            emptyColumnFamily = false;
             for (int i = 0; i < cfNames.size(); i++) {
                 byte[] cfName = cfNames.get(i);
                 ColumnFamilyHandle cfHandle = cfHandles.get(i);
