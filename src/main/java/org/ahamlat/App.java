@@ -46,29 +46,28 @@ public class App
                     byte[] cfName = cfNames.get(i);
                     ColumnFamilyHandle cfHandle = cfHandles.get(i);
                     String size = rocksdb.getProperty(cfHandle, "rocksdb.estimate-live-data-size");
-                    if (!size.isEmpty()) {
+                    if (!size.isEmpty() && !size.isBlank()) {
                         long sizeLong = Long.parseLong(size);
                         if (sizeLong == 0) emptyColumnFamily = true;
-                        if (!emptyColumnFamily)
+                        if (!emptyColumnFamily) {
                             System.out.println("****** Column family '" + getNameById(cfName) + "' size: " + formatOutputSize(sizeLong) + " ******");
-                    }
-                    // System.out.println("SST table : "+ rocksdb.getProperty(cfHandle, "rocksdb.sstables"));
-                    if (!emptyColumnFamily) {
-                        System.out.println("Number of live snapshots : " + rocksdb.getProperty(cfHandle, "rocksdb.num-snapshots"));
-                        String totolSstFilesSize = rocksdb.getProperty(cfHandle, "rocksdb.total-sst-files-size");
-                        if (!totolSstFilesSize.isEmpty() && !totolSstFilesSize.isBlank()) {
-                            System.out.println("Total size of SST Files : " + formatOutputSize(Long.parseLong(totolSstFilesSize)));
-                        }
-                        String liveSstFilesSize = rocksdb.getProperty(cfHandle, "rocksdb.live-sst-files-size");
-                        if (!liveSstFilesSize.isEmpty() && !liveSstFilesSize.isBlank()) {
-                            System.out.println("Size of live SST Filess : " + formatOutputSize(Long.parseLong(liveSstFilesSize)));
-                        }
+                            // System.out.println("SST table : "+ rocksdb.getProperty(cfHandle, "rocksdb.sstables"));
 
-                        ColumnFamilyMetaData columnFamilyMetaData = rocksdb.getColumnFamilyMetaData(cfHandle);
-                        long sizeBytes = columnFamilyMetaData.size();
-                        System.out.println("Column family size (with getColumnFamilyMetaData) : " + formatOutputSize(sizeBytes));
-                        System.out.println("");
+                            System.out.println("Number of live snapshots : " + rocksdb.getProperty(cfHandle, "rocksdb.num-snapshots"));
+                            String totolSstFilesSize = rocksdb.getProperty(cfHandle, "rocksdb.total-sst-files-size");
+                            if (!totolSstFilesSize.isEmpty() && !totolSstFilesSize.isBlank()) {
+                                System.out.println("Total size of SST Files : " + formatOutputSize(Long.parseLong(totolSstFilesSize)));
+                            }
+                            String liveSstFilesSize = rocksdb.getProperty(cfHandle, "rocksdb.live-sst-files-size");
+                            if (!liveSstFilesSize.isEmpty() && !liveSstFilesSize.isBlank()) {
+                                System.out.println("Size of live SST Filess : " + formatOutputSize(Long.parseLong(liveSstFilesSize)));
+                            }
 
+                            ColumnFamilyMetaData columnFamilyMetaData = rocksdb.getColumnFamilyMetaData(cfHandle);
+                            long sizeBytes = columnFamilyMetaData.size();
+                            System.out.println("Column family size (with getColumnFamilyMetaData) : " + formatOutputSize(sizeBytes));
+                            System.out.println("");
+                        }
                     }
                 }
             } finally {
@@ -77,7 +76,7 @@ public class App
                 }
             }
         } else {
-            System.out.println("Database path not provided");
+            System.out.println("Database path not provided, use --dbPath=/path/to/rocksdb");
         }
     }
 
