@@ -39,7 +39,7 @@ public class App
                 if (!size.isEmpty()) {
                     long sizeLong = Long.parseLong(size);
                     if (sizeLong == 0) emptyColumnFamily = true;
-                    if (!emptyColumnFamily) System.out.println(" Column family '" + new String(cfName, StandardCharsets.UTF_8) + "' size: " +formatOutputSize(sizeLong));
+                    if (!emptyColumnFamily) System.out.println("****** Column family '" + new String(cfName, StandardCharsets.UTF_8) + "' size: " +formatOutputSize(sizeLong)+ " ******");
                 }
                 // System.out.println("SST table : "+ rocksdb.getProperty(cfHandle, "rocksdb.sstables"));
                 if (!emptyColumnFamily) {
@@ -52,6 +52,7 @@ public class App
                     if (!liveSstFilesSize.isEmpty() && !liveSstFilesSize.isBlank()) {
                         System.out.println("Size of live SST Filess : " + formatOutputSize(Long.parseLong(liveSstFilesSize)));
                     }
+                    System.out.println("");
                 }
             }
         } finally {
