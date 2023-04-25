@@ -35,6 +35,12 @@ public class App
                 ColumnFamilyHandle cfHandle = cfHandles.get(i);
                 String size = rocksdb.getProperty(cfHandle, "rocksdb.estimate-live-data-size");
                 System.out.println("Column family '" + new String(cfName, StandardCharsets.UTF_8) + "' size: " + size);
+
+                System.out.println("SST table : "+ rocksdb.getProperty(cfHandle, "rocksdb.sstables"));
+                System.out.println("Number of live snapshots : "+ rocksdb.getProperty(cfHandle, "rocksdb.num-snapshots"));
+                System.out.println("Total size of SST Files : "+ rocksdb.getProperty(cfHandle, "rocksdb.total-sst-files-size"));
+                System.out.println("Size of live SST Files : "+ rocksdb.getProperty(cfHandle, "rocksdb.live-sst-files-size"));
+
             }
         } finally {
             for (ColumnFamilyHandle cfHandle : cfHandles) {
