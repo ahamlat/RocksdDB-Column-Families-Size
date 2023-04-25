@@ -1,5 +1,6 @@
 package org.ahamlat;
 
+import org.bouncycastle.util.Arrays;
 import org.rocksdb.ColumnFamilyDescriptor;
 import org.rocksdb.ColumnFamilyHandle;
 import org.rocksdb.Options;
@@ -39,7 +40,7 @@ public class App
                 if (!size.isEmpty()) {
                     long sizeLong = Long.parseLong(size);
                     if (sizeLong == 0) emptyColumnFamily = true;
-                    if (!emptyColumnFamily) System.out.println("****** Column family '" + new String(cfName, StandardCharsets.UTF_8) + "' size: " +formatOutputSize(sizeLong)+ " ******");
+                    if (!emptyColumnFamily) System.out.println("****** Column family '" + getNameById(cfName) + "' size: " +formatOutputSize(sizeLong)+ " ******");
                 }
                 // System.out.println("SST table : "+ rocksdb.getProperty(cfHandle, "rocksdb.sstables"));
                 if (!emptyColumnFamily) {
@@ -77,6 +78,15 @@ public class App
         } else {
             return size+ " B";
         }
+    }
+
+    public static String getNameById(byte[] id) {
+        for (KeyValueSegmentIdentifier segment : KeyValueSegmentIdentifier.values()) {
+            if (Arrays.areEqual(segment.getId(), id)) {
+                return segment.getName();
+            }
+        }
+        return null; // id not found
     }
 
 }

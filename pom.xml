@@ -20,6 +20,12 @@
       <artifactId>rocksdbjni</artifactId>
       <version>8.0.0</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
+      <version>1.70</version>
+    </dependency>
 
   </dependencies>
 
