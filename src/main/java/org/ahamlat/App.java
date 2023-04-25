@@ -3,11 +3,14 @@ package org.ahamlat;
 import org.bouncycastle.util.Arrays;
 import org.rocksdb.ColumnFamilyDescriptor;
 import org.rocksdb.ColumnFamilyHandle;
+import org.rocksdb.ColumnFamilyMetaData;
 import org.rocksdb.Options;
 import org.rocksdb.RocksDB;
 import org.rocksdb.RocksDBException;
+import org.rocksdb.util.SizeUnit;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +56,12 @@ public class App
                     if (!liveSstFilesSize.isEmpty() && !liveSstFilesSize.isBlank()) {
                         System.out.println("Size of live SST Filess : " + formatOutputSize(Long.parseLong(liveSstFilesSize)));
                     }
+
+                    ColumnFamilyMetaData columnFamilyMetaData = rocksdb.getColumnFamilyMetaData(cfHandle);
+                    long sizeBytes = columnFamilyMetaData.size();
+                    System.out.println("Column family size (with getColumnFamilyMetaData) : "+formatOutputSize(sizeBytes));
                     System.out.println("");
+
                 }
             }
         } finally {
