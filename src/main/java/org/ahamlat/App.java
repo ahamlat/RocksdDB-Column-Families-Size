@@ -34,17 +34,43 @@ public class App
                 byte[] cfName = cfNames.get(i);
                 ColumnFamilyHandle cfHandle = cfHandles.get(i);
                 String size = rocksdb.getProperty(cfHandle, "rocksdb.estimate-live-data-size");
-                System.out.println("Column family '" + new String(cfName, StandardCharsets.UTF_8) + "' size: " + size);
-
-                System.out.println("SST table : "+ rocksdb.getProperty(cfHandle, "rocksdb.sstables"));
+                if (!size.isEmpty()) {
+                    long sizeLong = Long.parseLong(size);
+                    System.out.println("Column family '" + new String(cfName, StandardCharsets.UTF_8) + "' size: " +formatOutputSize(sizeLong));
+                }
+                // System.out.println("SST table : "+ rocksdb.getProperty(cfHandle, "rocksdb.sstables"));
                 System.out.println("Number of live snapshots : "+ rocksdb.getProperty(cfHandle, "rocksdb.num-snapshots"));
-                System.out.println("Total size of SST Files : "+ rocksdb.getProperty(cfHandle, "rocksdb.total-sst-files-size"));
-                System.out.println("Size of live SST Files : "+ rocksdb.getProperty(cfHandle, "rocksdb.live-sst-files-size"));
-
+                String totolSstFilesSize = rocksdb.getProperty(cfHandle, "rocksdb.total-sst-files-size");
+                if (!totolSstFilesSize.isEmpty() && !totolSstFilesSize.isBlank()) {
+                    System.out.println("Total size of SST Files : "+formatOutputSize(Long.parseLong(totolSstFilesSize)));
+                }
+                String liveSstFilesSize = rocksdb.getProperty(cfHandle, "rocksdb.live-sst-files-size");
+                if (!liveSstFilesSize.isEmpty() && !liveSstFilesSize.isBlank()) {
+                    System.out.println("Size of live SST Filess : "+formatOutputSize(Long.parseLong(liveSstFilesSize)));
+                }
             }
         } finally {
             for (ColumnFamilyHandle cfHandle : cfHandles) {
                 cfHandle.close();
             }
         }
-    }}
+    }
+
+    private static String formatOutputSize(long size) {
+        if (size > (1024 * 1024 * 1024)) {
+            long sizeInGiB = size/(1024 * 1024 * 1024);
+            return sizeInGiB+ " GiB";
+        }
+        else if (size > (1024 * 1024)) {
+            long sizeInMiB = size/(1024 * 1024);
+            return sizeInMiB+ " MiB";
+        }
+        else if (size > 1024) {
+            long sizeInKiB = size/1024;
+            return sizeInKiB+ " KiB";
+        } else {
+            return size+ " B";
+        }
+    }
+
+}
