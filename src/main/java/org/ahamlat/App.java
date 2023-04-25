@@ -29,6 +29,7 @@ public class App
         for (byte[] cfName : cfNames) {
             cfDescriptors.add(new ColumnFamilyDescriptor(cfName));
         }
+        boolean emptyColumnFamily = false;
         try (final RocksDB rocksdb = RocksDB.openReadOnly (PATH, cfDescriptors,cfHandles)) {
             for (int i = 0; i < cfNames.size(); i++) {
                 byte[] cfName = cfNames.get(i);
@@ -36,17 +37,20 @@ public class App
                 String size = rocksdb.getProperty(cfHandle, "rocksdb.estimate-live-data-size");
                 if (!size.isEmpty()) {
                     long sizeLong = Long.parseLong(size);
-                    System.out.println("Column family '" + new String(cfName, StandardCharsets.UTF_8) + "' size: " +formatOutputSize(sizeLong));
+                    if (sizeLong == 0) emptyColumnFamily = true;
+                    if (!emptyColumnFamily) System.out.println(" Column family '" + new String(cfName, StandardCharsets.UTF_8) + "' size: " +formatOutputSize(sizeLong));
                 }
                 // System.out.println("SST table : "+ rocksdb.getProperty(cfHandle, "rocksdb.sstables"));
-                System.out.println("Number of live snapshots : "+ rocksdb.getProperty(cfHandle, "rocksdb.num-snapshots"));
-                String totolSstFilesSize = rocksdb.getProperty(cfHandle, "rocksdb.total-sst-files-size");
-                if (!totolSstFilesSize.isEmpty() && !totolSstFilesSize.isBlank()) {
-                    System.out.println("Total size of SST Files : "+formatOutputSize(Long.parseLong(totolSstFilesSize)));
-                }
-                String liveSstFilesSize = rocksdb.getProperty(cfHandle, "rocksdb.live-sst-files-size");
-                if (!liveSstFilesSize.isEmpty() && !liveSstFilesSize.isBlank()) {
-                    System.out.println("Size of live SST Filess : "+formatOutputSize(Long.parseLong(liveSstFilesSize)));
+                if (!emptyColumnFamily) {
+                    System.out.println("Number of live snapshots : " + rocksdb.getProperty(cfHandle, "rocksdb.num-snapshots"));
+                    String totolSstFilesSize = rocksdb.getProperty(cfHandle, "rocksdb.total-sst-files-size");
+                    if (!totolSstFilesSize.isEmpty() && !totolSstFilesSize.isBlank()) {
+                        System.out.println("Total size of SST Files : " + formatOutputSize(Long.parseLong(totolSstFilesSize)));
+                    }
+                    String liveSstFilesSize = rocksdb.getProperty(cfHandle, "rocksdb.live-sst-files-size");
+                    if (!liveSstFilesSize.isEmpty() && !liveSstFilesSize.isBlank()) {
+                        System.out.println("Size of live SST Filess : " + formatOutputSize(Long.parseLong(liveSstFilesSize)));
+                    }
                 }
             }
         } finally {
