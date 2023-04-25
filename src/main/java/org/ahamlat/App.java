@@ -31,8 +31,8 @@ public class App
         }
         boolean emptyColumnFamily ;
         try (final RocksDB rocksdb = RocksDB.openReadOnly (PATH, cfDescriptors,cfHandles)) {
-            emptyColumnFamily = false;
             for (int i = 0; i < cfNames.size(); i++) {
+                emptyColumnFamily = false;
                 byte[] cfName = cfNames.get(i);
                 ColumnFamilyHandle cfHandle = cfHandles.get(i);
                 String size = rocksdb.getProperty(cfHandle, "rocksdb.estimate-live-data-size");
